@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>РИДАНИ — Офіційний сайт</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header class="hero">
+    <div class="container hero-content">
+      <div class="avatar-wrapper">
+        <img src="photo.jpg" alt="Ридани" class="chat-avatar">
+      </div>
+      <h1 class="chat-title">РИДАНИ</h1>
+      <p class="chat-subtitle">Офіційна спільнота • Нічний вайб</p>
+
+      <a href="https://t.me/YOUR_CHAT_LINK" target="_blank" class="join-btn">
+        <span>ПРИЄДНАТИСЯ ДО ЧАТУ</span>
+      </a>
+
+      <div class="sync-badge">
+        <span class="dot"></span> Дані оновлено: <span id="sync-date">--.--.----</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="section">
+      <h2 class="section-title">СПИСОК СКЛАДУ</h2>
+      
+      <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('admins')">Адміністрація</button>
+        <button class="tab-btn" onclick="switchTab('bots')">Боти</button>
+        <button class="tab-btn" onclick="switchTab('members')">Учасники</button>
+      </div>
+
+      <div id="admins" class="grid tab-content active"></div>
+      <div id="bots" class="grid tab-content"></div>
+      <div id="members" class="grid tab-content"></div>
+    </section>
+
+    <section class="section rules-section">
+      <h2 class="section-title">ПРАВИЛА ЧАТУ</h2>
+      <div class="rules-list">
+        <div class="rule-item">
+          <span class="rule-num">01</span>
+          <p>Повага до учасників — без безпідставних образ та провокацій.</p>
+        </div>
+        <div class="rule-item">
+          <span class="rule-num">02</span>
+          <p>Спам та стороння реклама заборонені.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>© РИДАНИ. Усі права захищені.</p>
+  </footer>
+
+  <script>
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      
+      document.getElementById(tabId).classList.add('active');
+      event.target.classList.add('active');
+    }
+
+    async function loadData() {
+      try {
+        const res = await fetch('data.json');
+        const data = await res.json();
+
+        if (data.updated_at) {
+          document.getElementById('sync-date').innerText = data.updated_at;
+        }
+
+        const render = (id, list) => {
+          const el = document.getElementById(id);
+          el.innerHTML = '';
+          (list || []).forEach(item => {
+            el.innerHTML += `
+              <div class="card">
+                <div class="card-number">#${item.number}</div>
+                <div class="card-info">
+                  <h3>${item.name}</h3>
+                  <span class="role">${item.role}</span>
+                </div>
+              </div>
+            `;
+          });
+        };
+
+        render('admins', data.admins);
+        render('bots', data.bots);
+        render('members', data.members);
+      } catch (e) {
+        console.log('Помилка завантаження data.json:', e);
+      }
+    }
+
+    loadData();
+  </script>
+</body>
+</html>

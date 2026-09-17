@@ -1,0 +1,10 @@
+{
+  "updated_at": "17.09.2026",
+  "admins": [
+    { "number": "1", "name": "Засновник", "role": "Owner" }
+  ],
+  "bots": [
+    { "number": "🤖", "name": "Бот", "role": "Модерація" }
+  ],
+  "members": []
+}
